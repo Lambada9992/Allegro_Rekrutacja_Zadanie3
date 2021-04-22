@@ -12,4 +12,16 @@ public class Repository {
     @Getter
     @Setter
     String name;
+
+    Integer stars;
+
+    @JsonProperty("stars")
+    public Integer getStars() {
+        return stars;
+    }
+
+    @JsonProperty("stargazers_count")
+    public void setStars(Integer stars) {
+        this.stars = stars;
+    }
 }
