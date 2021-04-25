@@ -25,7 +25,7 @@ pojawienie się pliku .jar w podfolderze target. Następnym krokiem jest uruchom
 (np. po przez terminal przy pomocy komendy "java -jar sciezka_do_pliku_jar")
 3. <b>Brak Mavena oraz Intellij IDEA:</b> wejście do folderu programu, 
 a następnie przy pomocy terminala uruchomienie apllikacji po przez komendę "mvnw spring-boot:run". 
-(Można wykorzystać komendę mvn ponieważ Maven jest zawarty w folderze projektu)
+(Można wykorzystać komendę mvnw ponieważ Maven jest zawarty w folderze projektu)
 
 We wszystkich powyższych przypadkach należy się upewnić, że port 8080 jest wolny.<br>
 W przypadku opcji nr 2 oraz 3 należy się upewnić że wśród zmiennych systemowych znajduje się JAVA_HOME.<br>
