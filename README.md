@@ -46,4 +46,4 @@ Przykład:
 ### Propozycje rozszerzenia
 - Rozszerzenia możliwości funkcji repos np. przez dodanie możliwości sortowania wywoływanej po przez argument zapytania etc.
 - Wykorzystanie Rective Spring Web w celu umożliwienia pracy nie blokującej, asynchronicznej (Wykorzystanie FLUX, MONO oraz WebClient).
-- Dodanie możliwości odpowiadania na kolejne(nowe) zapytania Http
+- Dodanie możliwości odpowiadania na kolejne(nowe) zapytania Http.
