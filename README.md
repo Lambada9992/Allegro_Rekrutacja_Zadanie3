@@ -24,7 +24,7 @@ Java: JDK 8 ver. 261
 pojawienie się pliku .jar w podfolderze target. Następnym krokiem jest uruchomienie pliku .jar.
 (np. po przez terminal przy pomocy komendy "java -jar sciezka_do_pliku_jar")
 3. <b>Brak Mavena oraz Intellij IDEA:</b> wejście do folderu programu, 
-a następnie przy pomocy terminala uruchomienie apllikacji po przez komendę "mvn spring-boot:run". 
+a następnie przy pomocy terminala uruchomienie apllikacji po przez komendę "mvnw spring-boot:run". 
 (Można wykorzystać komendę mvn ponieważ Maven jest zawarty w folderze projektu)
 
 We wszystkich powyższych przypadkach należy się upewnić, że port 8080 jest wolny.<br>
