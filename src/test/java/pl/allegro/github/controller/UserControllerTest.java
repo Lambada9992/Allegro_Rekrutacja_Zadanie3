@@ -49,7 +49,7 @@ public class UserControllerTest {
         repo1.setStars(1);
         repo2.setStars(2);
         repo3.setStars(3);
-        List<Repository> repositoryList = Arrays.asList(repo1,repo2,repo3);
+        List<Repository> repositoryList = Arrays.asList(repo1, repo2, repo3);
         Mockito.when(userService.getRepositories(Mockito.anyString())).thenReturn(repositoryList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/a/repos"))

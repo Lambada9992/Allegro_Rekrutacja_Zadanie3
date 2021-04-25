@@ -13,5 +13,4 @@ public class Stars {
     @Getter
     @Setter
     Integer stars = 0;
-
 }

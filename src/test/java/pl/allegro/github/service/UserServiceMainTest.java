@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import pl.allegro.github.dto.Repository;
+import pl.allegro.github.dto.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,84 +30,120 @@ public class UserServiceMainTest {
     private RestTemplate restTemplate;
 
     @Test
-    @DisplayName("Should Return Null If The Http Exception Occur")
-    void ShouldReturnNullIfTheHttpExceptionOccur() {
+    @DisplayName("Should return null list of repositories if the Http exception occur while getting repositories")
+    void ShouldReturnNullListIfTheHttpExceptionOccurWhileGettingRepositories() {
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenReturn(new User(3));
         Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(Repository[].class)))
                 .thenThrow(HttpClientErrorException.class);
 
         Assertions.assertNull(userServiceMain.getRepositories("a"));
     }
 
+    @Test
+    @DisplayName("Should return null list of repositories if the Http exception occur while getting user")
+    void ShouldReturnNullListIfTheHttpExceptionOccurWhileGettingUser() {
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenThrow(HttpClientErrorException.class);
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(Repository[].class)))
+                .thenReturn(new Repository[]{});
+
+        Assertions.assertNull(userServiceMain.getRepositories("a"));
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {1,2,49,50,51,101,303})
+    @ValueSource(ints = {1, 2, 49, 50, 51, 101, 303})
     @DisplayName("Should return valid list of repositories")
     void ShouldReturnValidListOfRepositories(int numberOfRepos) {
         List<Repository> repos = new ArrayList<>();
         String user = "a";
 
-        for (int i = 0;i<numberOfRepos;i++){
-            repos.add(new Repository(Integer.toString(i),i));
+        for (int i = 0; i < numberOfRepos; i++) {
+            repos.add(new Repository(Integer.toString(i), i));
         }
 
-        for (int i = 1; i<(repos.size()/userServiceMain.getPageSize())+2;i++){
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenReturn(new User(numberOfRepos));
 
-            String url = String.format(userServiceMain.getUserReposApiUrl()+userServiceMain.getPageApiArguments()
-                    ,user,i,userServiceMain.getPageSize());
+        for (int i = 1; i <= (repos.size() / userServiceMain.getPageSize()) + 2; i++) {
 
-            List<Repository> sublist = repos.subList((i-1)*userServiceMain.getPageSize(),
-                    Math.min(i*userServiceMain.getPageSize(),repos.size()));
+            String url = String.format(userServiceMain.getUserReposApiUrl() + userServiceMain.getPageApiArguments()
+                    , user, i, userServiceMain.getPageSize());
 
-            Mockito.when(restTemplate.getForObject(Mockito.eq(url),Mockito.eq(Repository[].class)))
+            List<Repository> sublist = repos.subList(Math.min((i - 1) * userServiceMain.getPageSize(), repos.size()),
+                    Math.min(i * userServiceMain.getPageSize(), repos.size()));
+
+            Mockito.when(restTemplate.getForObject(Mockito.eq(url), Mockito.eq(Repository[].class)))
                     .thenReturn(sublist.toArray(new Repository[sublist.size()]));
         }
 
+
         List<Repository> response = userServiceMain.getRepositories(user);
 
-        Assertions.assertEquals(response,repos);
+        Assertions.assertEquals(response, repos);
     }
 
     @Test
     @DisplayName("Should return page size between 1 and 100")
-    void shouldReturnPageSizeBetween1and100(){
-        Assertions.assertTrue(userServiceMain.getPageSize()<=100);
-        Assertions.assertTrue(userServiceMain.getPageSize()>=1);
+    void shouldReturnPageSizeBetween1and100() {
+        Assertions.assertTrue(userServiceMain.getPageSize() <= 100);
+        Assertions.assertTrue(userServiceMain.getPageSize() >= 1);
     }
 
 
     @ParameterizedTest
-    @ValueSource(ints = {1,2,49,50,51,102,303})
+    @ValueSource(ints = {1, 2, 49, 50, 51, 102, 303})
     @DisplayName("Should return valid number of stars")
     void ShouldReturnValidNumberOfStars(int numberOfRepos) {
         List<Repository> repos = new ArrayList<>();
         String user = "a";
         int sum = 0;
 
-        for (int i = 0;i<numberOfRepos;i++){
-            repos.add(new Repository(Integer.toString(i),i));
-            sum+=i;
+        for (int i = 0; i < numberOfRepos; i++) {
+            repos.add(new Repository(Integer.toString(i), i));
+            sum += i;
         }
 
-        for (int i = 1; i<(repos.size()/userServiceMain.getPageSize())+2;i++){
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenReturn(new User(numberOfRepos));
 
-            String url = String.format(userServiceMain.getUserReposApiUrl()+userServiceMain.getPageApiArguments()
-                    ,user,i,userServiceMain.getPageSize());
+        for (int i = 1; i <= (repos.size() / userServiceMain.getPageSize()) + 2; i++) {
 
-            List<Repository> sublist = repos.subList((i-1)*userServiceMain.getPageSize(),
-                    Math.min(i*userServiceMain.getPageSize(),repos.size()));
+            String url = String.format(userServiceMain.getUserReposApiUrl() + userServiceMain.getPageApiArguments()
+                    , user, i, userServiceMain.getPageSize());
 
-            Mockito.when(restTemplate.getForObject(Mockito.eq(url),Mockito.eq(Repository[].class)))
+            List<Repository> sublist = repos.subList(Math.min((i - 1) * userServiceMain.getPageSize(), repos.size()),
+                    Math.min(i * userServiceMain.getPageSize(), repos.size()));
+
+            Mockito.when(restTemplate.getForObject(Mockito.eq(url), Mockito.eq(Repository[].class)))
                     .thenReturn(sublist.toArray(new Repository[sublist.size()]));
         }
 
-        Assertions.assertEquals(sum,userServiceMain.getStars(user).getStars());
+        Assertions.assertEquals(sum, userServiceMain.getStars(user).getStars());
     }
 
     @Test
-    @DisplayName("Should return null Stars")
-    void shouldReturnNullStar(){
+    @DisplayName("Should return null stars If the Http exception occur while getting repositories")
+    void shouldReturnNullStarIfHttpExceptionOccurWhileGettingRepos() {
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenReturn(new User(3));
+
         Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(Repository[].class)))
                 .thenThrow(HttpClientErrorException.class);
 
         Assertions.assertNull(userServiceMain.getStars("a"));
     }
+
+    @Test
+    @DisplayName("Should return null stars If the Http exception occur while getting user")
+    void shouldReturnNullStarIfHttpExceptionOccurWhileGettingUser() {
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
+                .thenThrow(HttpClientErrorException.class);
+
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(Repository[].class)))
+                .thenReturn(new Repository[]{});
+
+        Assertions.assertNull(userServiceMain.getStars("a"));
+    }
+
 }

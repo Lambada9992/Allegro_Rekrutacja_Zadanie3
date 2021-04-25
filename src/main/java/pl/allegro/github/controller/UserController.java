@@ -14,31 +14,46 @@ import pl.allegro.github.service.UserService;
 
 import java.util.List;
 
+/**
+ * The Class that is responsible for handling REST requests
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Qualifier("userServiceMain")
     @Autowired
+    @Qualifier("userServiceMain")
     private UserService userService;
 
+    /**
+     * Method responsible for responding to GetRequest
+     *
+     * @param user nickname/login on GitHub
+     * @return List of repositories(names,stars)
+     */
     @GetMapping("/{user}/repos")
-    public ResponseEntity<List<Repository>> getRepos(@PathVariable("user") String user){
+    public ResponseEntity<List<Repository>> getRepos(@PathVariable("user") String user) {
         List<Repository> repositoryList = userService.getRepositories(user);
-        if(repositoryList == null){
+        if (repositoryList == null) {
             return ResponseEntity.status(500).body(null);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(repositoryList);
         }
 
     }
 
+    /**
+     * Method responsible for responding to GetRequest
+     *
+     * @param user nickname/login on GitHub
+     * @return Star object which contains number of stars
+     */
     @GetMapping("/{user}/stars")
-    public ResponseEntity<Stars> getStars(@PathVariable("user") String user){
+    public ResponseEntity<Stars> getStars(@PathVariable("user") String user) {
         Stars stars = userService.getStars(user);
-        if(stars==null){
+        if (stars == null) {
             return ResponseEntity.status(500).body(null);
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(stars);
         }
 
